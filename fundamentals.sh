@@ -16,7 +16,7 @@ GCS=$(cat <<EOF
 ################################# GCS Storage ##################################
 
 ## GCS Bucket where thumbor's loader will fetch images from.
-LOADER = 'thumbor_gcs.loader.gcs_loader'
+LOADER = '{{ LOADER | default('thumbor_gcs.loader.gcs_loader')}}'
 
 ## GCS Bucket ID where thumbor's loader will fetch images from.
 LOADER_GCS_BUCKET_ID = '{{ LOADER_GCS_BUCKET_ID | default('') }}'
@@ -28,7 +28,7 @@ LOADER_GCS_PROJECT_ID = '{{ LOADER_GCS_PROJECT_ID | default('') }}'
 LOADER_GCS_ROOT_PATH = '{{ LOADER_GCS_ROOT_PATH | default('') }}'
 
 ## GCS Bucket ID where thumbor's result storage will store images.
-RESULT_STORAGE = 'thumbor_gcs.result_storage.gcs_result_storage'
+RESULT_STORAGE = '{{ RESULT_STORAGE | default('thumbor_gcs.result_storage.gcs_result_storage')}}'
 
 ## GCS Bucket ID where thumbor's result storage will store images.
 RESULT_STORAGE_GCS_BUCKET_ID = '{{ RESULT_STORAGE_GCS_BUCKET_ID | default('') }}'
