@@ -1,0 +1,16 @@
+name: Docker Build
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+jobs:
+  build:
+    uses: NaturalSelectionLabs/Daedalus/.github/workflows/docker-tpl.yaml@main
+    with:
+      images: rss3/thumbor
+      context: .
+      dockerfile: ./Dockerfile
+    secrets: inherit
