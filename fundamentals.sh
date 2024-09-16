@@ -13,6 +13,11 @@ echo "OPTIMIZERS = ['thumbor_plugins.optimizers.mozjpeg', 'thumbor_plugins.optim
 
 # configure gcs
 GCS=$(cat <<EOF
+################################# Thumbor Config ##################################
+
+## Thumbor engine to use.
+ENGINE = '{{ ENGINE | default('thumbor.engines.pil')}}'
+
 ################################# GCS Storage ##################################
 
 ## GCS Bucket where thumbor's loader will fetch images from.
