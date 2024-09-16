@@ -20,7 +20,7 @@ RUN ../configure && make
 
 FROM mvhirsch/thumbor:7.5.2
 
-RUN pip install --user --no-cache-dir thumbor-gcs thumbor-plugins
+RUN pip install --user --no-cache-dir thumbor-gcs thumbor-plugins thumbor-wand-engine
 
 COPY --from=mozjpeg /usr/local/share/mozjpeg/build /usr/local/share/mozjpeg/build
 RUN ln -s /usr/local/share/mozjpeg/build/cjpeg /usr/local/bin/mozjpeg
