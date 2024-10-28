@@ -7,6 +7,12 @@ on:
     tags:
       - v*
 
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+  packages: write
+
 env:
   GAR_REGISTRY: us-central1-docker.pkg.dev/follow-428106/follow
 
