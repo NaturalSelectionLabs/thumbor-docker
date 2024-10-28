@@ -6,11 +6,59 @@ on:
       - main
     tags:
       - v*
+
+env:
+  GAR_REGISTRY: us-central1-docker.pkg.dev/follow-428106/follow
+
 jobs:
   build:
-    uses: NaturalSelectionLabs/Daedalus/.github/workflows/docker-tpl.yaml@main
-    with:
-      images: rss3/thumbor
-      context: .
-      dockerfile: ./Dockerfile
-    secrets: inherit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Google auth
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          token_format: access_token
+          workload_identity_provider: projects/987979088361/locations/global/workloadIdentityPools/github/providers/github-action
+          service_account: gh-action@naturalselectionlabs.iam.gserviceaccount.com
+          create_credentials_file: true
+
+      - name: Login to GAR
+        uses: docker/login-action@v3
+        with:
+          registry: us-central1-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.GAR_REGISTRY }}/thumbor
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=semver,pattern=v{{version}}
+            type=semver,pattern=v{{major}}.{{minor}}
+            type=semver,pattern=v{{major}}
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha
+            type=sha,format=long
+            type=sha,prefix={{branch}}-,enable=${{ !startsWith(github.ref, 'refs/tags') }},event=branch
+            type=sha,format=long,prefix={{branch}}-,enable=${{ !startsWith(github.ref, 'refs/tags') }},event=branch
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
